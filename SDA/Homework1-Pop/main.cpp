@@ -1,8 +1,23 @@
+/**
+ *
+ * Solution to homework task
+ * Data Structures Course
+ * Faculty of Mathematics and Informatics of Sofia University
+ * Winter semester 2016/2017
+ *
+ * @author Silviya Yanakieva
+ * @idnumber 61881
+ * @task 1
+ * @compiler GCC
+ *
+ */
+
 #include "Stack.h"
 #include "Operations.h"
 #include "DynamicArray.h"
 #include <iostream>
 #include<fstream>
+#include<iomanip>
 #include <string>
 #include <cstring>
 using namespace std;
@@ -11,6 +26,7 @@ using namespace std;
 bool isOperand(char c);
 bool isOperator(char c, DynamicArray<Operation*> *op);
 char findOperator(char c, DynamicArray<Operation*> *op);
+
 int main()
 {
     //operators are held in a dynamic array
@@ -23,18 +39,23 @@ int main()
     getline(prefix_notation,workstr,'\n');
     cout<<workstr<<endl;
 
+    prefix_notation.close();
+
+    //helper variables
+    int operator_counter = 0, number_counter = 0;
+    char sign;
     size_t sizeofw = workstr.length();
     cout<<"size of workstr is "<<sizeofw<<endl;
+    bool flag = true;
 
-    prefix_notation.close();
-    char sign;
     //result from calculating
-    float result;
-     Stack<float> res(10);
+    double result;
+
+    //calculation is made with stack<double> while reversing the string
+    Stack<double> res(10);
 
     // numbers and intermediate results are held in stack
     Stack<std::string> st(sizeofw);
-
 
     //load operators
     ifstream oper_loader;
@@ -53,7 +74,19 @@ int main()
     oper_loader.close();
 
 
-//prefix to postfix
+/*
+prefix to postfix:
+idea for the algorithm took from http://qa.geeksforgeeks.org/6252/it-possible-convert-prefix-expression-postfix-expression
+1.Scan each character of the input from right to left.
+
+2.If the character is operand then push it onto the stack.
+
+3.If the character if an operator, then pop two operands from stack and concatenate them as (operand1, operand2, operator).
+
+4.Push this result onto the stack.
+
+5.After parsing the complete input, if still any elements exit in the stack, pop them out and concatenate.
+*/
 
 for(int cnt = sizeofw-1; cnt >= 0; cnt--)
 {
@@ -65,25 +98,43 @@ for(int cnt = sizeofw-1; cnt >= 0; cnt--)
     }
     if (isOperator( workstr.at(cnt), oper))
     {
-        cout<<"found operator "<<workstr.at(cnt)<<endl;
-        std::string op1,op2,temp;
-        op1 = st.Top(); st.Pop();
-        op2 = st.Top(); st.Pop();
-        temp = op1 + " " + op2 + " " + workstr.at(cnt);
-        st.Push(temp);
-        cout<<temp<<endl;
+        if( st.getSize() < 2)
+           {
+                flag = false; break;
+           }
+        else
+        {
+            cout<<"found operator "<<workstr.at(cnt)<<endl;
+            operator_counter++;
+            std::string op1,op2,temp;
+            op1 = st.Top(); st.Pop();
+            op2 = st.Top(); st.Pop();
+            temp = op1 + " " + op2 + " " + workstr.at(cnt);
+            st.Push(temp);
+            cout<<temp<<endl;
 
         sign = findOperator(workstr.at(cnt),oper);
 
-        float num1 = res.Top(); res.Pop();
-        float num2 = res.Top(); res.Pop();
-        float tempnum;
+        double num1 = res.Top(); res.Pop();
+        double num2 = res.Top(); res.Pop();
+        double tempnum;
         switch(sign)
         {
             case '+': tempnum = num1 + num2; res.Push(tempnum); break;
             case '-': tempnum = num1 - num2; res.Push(tempnum); break;
             case '*': tempnum = num1 * num2; res.Push(tempnum); break;
-            case '/': tempnum = num1 / num2; res.Push(tempnum); break;
+            case '/':
+                {
+                    if (num2 == 0)
+                    {
+                        throw std::overflow_error("Division by zero");
+                    }
+                    else
+                    {
+                        tempnum = num1 / num2;
+                        res.Push(tempnum);}
+                    } break;
+                }
         }
 
 
@@ -91,15 +142,17 @@ for(int cnt = sizeofw-1; cnt >= 0; cnt--)
     else if( isOperand(workstr.at(cnt)) )
     {
         cout<<"found number "<<workstr.at(cnt)<<endl;
+        number_counter++;
         if(workstr.at(cnt-1) == ' ')
         {
             std::string temp = "";
             temp=workstr.at(cnt);
             st.Push(temp);
-            float num = atof(temp.c_str());
+
+            //calculation
+            double num = atof(temp.c_str());
             res.Push(num);
             cout<<temp<<endl;
-           // cnt--;
         }
         else
         {
@@ -115,17 +168,34 @@ for(int cnt = sizeofw-1; cnt >= 0; cnt--)
                 temp+=workstr.at(i);
             }
             st.Push(temp);
-            float num = atof(temp.c_str());
+
+            double num = atof(temp.c_str());
             res.Push(num);
             cnt = to;
         }
     }
 }
 
-//print postfix notation
-result = res.Top();
-cout<<st.Top()<<endl;
-cout<<result<<endl;
+if (number_counter > operator_counter  && flag)
+{
+    //print postfix notation
+    std::string postfix="";
+    while(!st.isEmpty())
+    {
+        postfix+=st.Top();st.Pop();
+    }
+    result = res.Top();
+
+   cout<<postfix<<endl;
+   cout<<fixed<<std::setprecision(5)<<result<<endl;
+   //std::cout << std::fixed;
+
+}
+
+else if(!flag)
+    {
+        cout<<"Error - Invalid prefix notation"<<endl;
+    }
 
 delete  oper;
 return 0;
