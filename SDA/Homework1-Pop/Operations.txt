@@ -1,0 +1,51 @@
+#ifndef OPERATIONS
+#define OPERATIONS
+
+#include<string>
+
+class Operation
+{
+public:
+  Operation(char c, char op, char as);
+  Operation();
+  char getCode();
+  char getOperation();
+  char getAsoc();
+  int getPrior();
+
+private:
+    char code, operation, asoc;
+    int prior;
+    void setPrior();
+};
+
+Operation::Operation(char c, char op, char as): code(c), operation(op), asoc(as){ setPrior(); }
+
+Operation::Operation(): code(' '), operation(' '), asoc(' '),prior(-1){}
+
+char Operation::getCode()
+{
+    return code;
+}
+char Operation::getOperation()
+{
+    return operation;
+}
+char Operation::getAsoc()
+{
+    return asoc;
+}
+int Operation::getPrior()
+{
+    return prior;
+}
+
+void Operation::setPrior()
+{
+    if (operation == '*' || operation == '/')
+        prior=1;
+    if (operation == '+' || operation == '-')
+        prior=0;
+}
+#endif // OPERATIONS
+
