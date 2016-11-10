@@ -12,6 +12,7 @@ public:
 	Stack();
 	Stack(int);
 	~Stack();
+	int getIndex();
 
 	void pop();
 	void push(const T&);

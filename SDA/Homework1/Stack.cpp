@@ -46,3 +46,8 @@ bool Stack<T>::isEmpty()
 	return 1;
 	else return 0;
 }
+template<class T>
+int Stack<T>::getIndex()
+{
+	return this->index;
+}
