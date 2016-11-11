@@ -9,7 +9,7 @@ private:
 public:
 	Opers();
 	Opers(char, char, char);
-	float Result(float, float);
+	float Result(char, float, float);
 	char getOp();
 	char getSymb();
 	char getAsoc();

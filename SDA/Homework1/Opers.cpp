@@ -33,15 +33,24 @@ void Opers::setAsoc(char asoc)
 	this->asoc = asoc;
 }
 
-float Opers::Result(float a, float b)
+float Opers::Result(char op, float a, float b)
 {
-	if (getOp() == '+')
-		return a + b;
-	else if (getOp() == '-')
-		return a - b;
-	else if (getOp() == '*')
-		return a*b;
-	else if(getOp() =='/')
-	return a / b;
-	else return 0;
+	float temp;
+	switch (op)
+	{
+		case'+':temp = a + b; return temp; break;
+		case'-':temp = a - b; return temp; break;
+		case'*':temp = a * b; return temp; break;
+		case'/':
+		{
+			if (b != 0)
+			{
+				temp = a / b;
+				return temp;
+				break;
+			}
+			else break;
+		}
+	}
+
 }

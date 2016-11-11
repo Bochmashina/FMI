@@ -36,6 +36,7 @@ int main(int argc, char **argv)
 	}
 	file2.close();
 	string _operator, _op1, _op2;
+	float  _calcop1, _calcop2;
 
 	Stack<string> stak(prim_niz.length());
 	Stack<float> calc_stak(prim_niz.length());
@@ -57,7 +58,7 @@ int main(int argc, char **argv)
 				duff += prim_niz.at(j);
 			}
 			stak.push(duff);
-
+			calc_stak.push(stof(duff));
 		
 			i -= i - temp;
 			}
@@ -75,15 +76,30 @@ int main(int argc, char **argv)
 			stak.pop();
 			buff = _op1 + " " + _op2 + " " + _operator;
 			stak.push(buff);
+
+			_calcop1 = calc_stak.top();
+			calc_stak.pop();
+			_calcop2 = calc_stak.top();
+			calc_stak.pop();
+			char char_op = _operator.at(0);
+			for (size_t j = 0; j < opers.size(); j++)
+			{
+				if (opers.at(j)->getOp() == char_op)
+				{
+					calc_stak.push(opers.at(j)->Result(opers.at(j)->getSymb(), _calcop1, _calcop2));
+					break;
+				}
+				else continue;
+			}
+
 		}
 	}
-
 	do
 	{
 		cout << stak.top();
 		stak.pop();
 	} while (!stak.isEmpty());
-
+	cout <<endl<< calc_stak.top() << endl;
 
 	cin.get();
 	return 0;
