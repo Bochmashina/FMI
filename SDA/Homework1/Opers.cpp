@@ -34,7 +34,7 @@ void Opers::setAsoc(char asoc)
 }
 
 float Opers::Result(char op, float a, float b)
-{
+{   //Switch 
 	float temp;
 	switch (op)
 	{

@@ -1,16 +1,16 @@
 #include "assert.h"
 #include "Stack.h"
 template <class T>
-Stack<T>::Stack()
+Stack<T>::Stack() // Default constructor (not used in this program)
 {
 	this->size = 15;
-	this->values = new T[size];
+	this->values = new T[size]; // dynamic array
 	this->index = -1;
 }
 template <class T>
 Stack<T>::~Stack()
 {
-	delete[] values;
+	delete[] values; 
 }
 template <class T>
 Stack<T>::Stack(int x)
@@ -23,6 +23,7 @@ Stack<T>::Stack(int x)
 template <class T>
 void Stack<T>::pop()
 {
+	//Assert will throw "Assertion failed" if Stack is empty
 	assert(!isEmpty());
 	index --;
 }
@@ -41,7 +42,7 @@ T& Stack<T>::top()
 }
 template <class T>
 bool Stack<T>::isEmpty()
-{
+{	
 	if (this->index == 0)
 	return 1;
 	else return 0;

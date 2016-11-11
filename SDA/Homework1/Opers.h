@@ -5,7 +5,7 @@
 class Opers
 {
 private:
-	char symb, op, asoc; // Символът, който изобразява операцията и съответно операцията, която му съответства
+	char symb, op, asoc; //Symbol, operator, asociativity
 public:
 	Opers();
 	Opers(char, char, char);
